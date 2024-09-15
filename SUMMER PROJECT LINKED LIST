@@ -1,0 +1,185 @@
+#include <iostream>
+#include <limits> // Include this header for numeric_limits
+using namespace std;
+
+// Define the structure for a node in the linked list
+struct Node {
+    int data;     // Data stored in the node
+    Node* next;   // Pointer to the next node
+
+    // Constructor to initialize a node
+    Node(int val) : data(val), next(NULL) {}
+};
+
+// Define the class for the linked list
+class LinkedList {
+private:
+    Node* head; // Pointer to the first node in the list
+
+public:
+    // Constructor to initialize an empty list
+    LinkedList() : head(NULL) {}
+
+    // Function to add a node at the end of the list
+    void insertAtEnd(int val) {
+        Node* newNode = new Node(val); // Create a new node
+        if (!head) {
+            head = newNode; // If the list is empty, set head to new node
+        } else {
+            Node* temp = head; // Start from the head
+            while (temp->next != NULL) {
+                temp = temp->next; // Move to the end of the list
+            }
+            temp->next = newNode; // Add the new node at the end
+        }
+        cout << "Value " << val << " inserted at the end.\n";
+    }
+
+    // Function to add a node at the beginning of the list
+    void insertAtBeginning(int val) {
+        Node* newNode = new Node(val); // Create a new node
+        newNode->next = head; // Set the new node's next to the current head
+        head = newNode; // Update head to the new node
+        cout << "Value " << val << " inserted at the beginning.\n";
+    }
+
+    // Function to delete a node with a specific value
+    void deleteNode(int val) {
+        if (!head) {
+            cout << "List is empty. Nothing to delete.\n";
+            return;
+        }
+        if (head->data == val) {
+            Node* temp = head;
+            head = head->next; // Move head to the next node
+            delete temp; // Free memory
+            cout << "Value " << val << " deleted from the list.\n";
+            return;
+        }
+        Node* temp = head;
+        while (temp->next && temp->next->data != val) {
+            temp = temp->next; // Find the node to delete
+        }
+        if (temp->next) {
+            Node* nodeToDelete = temp->next;
+            temp->next = temp->next->next; // Bypass the node to delete
+            delete nodeToDelete; // Free memory
+            cout << "Value " << val << " deleted from the list.\n";
+        } else {
+            cout << "Value " << val << " not found in the list.\n";
+        }
+    }
+
+    // Function to print all elements in the list
+    void printList() {
+        if (!head) {
+            cout << "List is empty.\n";
+            return;
+        }
+        Node* temp = head; // Start from the head
+        cout << "Linked List: ";
+        while (temp != NULL) {
+            cout << temp->data << " "; // Print current node data
+            temp = temp->next; // Move to the next node
+        }
+        cout << endl; // Print a newline at the end
+    }
+
+    // Function to search for a value in the list
+    bool search(int val) {
+        Node* temp = head;
+        while (temp != NULL) {
+            if (temp->data == val) {
+                return true; // Value found
+            }
+            temp = temp->next; // Move to the next node
+        }
+        return false; // Value not found
+    }
+
+    // Function to find the length of the list
+    int length() {
+        int count = 0;
+        Node* temp = head;
+        while (temp != NULL) {
+            count++; // Increment count for each node
+            temp = temp->next; // Move to the next node
+        }
+        return count; // Return the total count
+    }
+};
+
+// Main function to provide a user-interactive menu
+int main() {
+    LinkedList list; // Create a linked list object
+    int choice, value;
+
+    // Loop that keeps running until the user chooses to exit
+    while (true) {
+        // Display the menu to the user
+        cout << "\n==== Linked List Menu ====\n";
+        cout << "1. Insert a value at the end\n";
+        cout << "2. Insert a value at the beginning\n";
+        cout << "3. Delete a value\n";
+        cout << "4. Print the list\n";
+        cout << "5. Search for a value\n";
+        cout << "6. Find the length of the list\n";
+        cout << "7. Exit\n";
+        cout << "Enter your choice (1-7): ";
+        cin >> choice; // Get the user's choice
+
+        // Validate the input
+        if (cin.fail()) {
+            cin.clear(); // Clear the error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
+            cout << "Invalid input. Please enter a number between 1 and 7.\n";
+            continue;
+        }
+
+        // Handle the user's choice using a switch statement
+        switch (choice) {
+            case 1: // Insert a value at the end
+                cout << "Enter the value to insert: ";
+                cin >> value;
+                list.insertAtEnd(value); // Call the insert function
+                break;
+
+            case 2: // Insert a value at the beginning
+                cout << "Enter the value to insert: ";
+                cin >> value;
+                list.insertAtBeginning(value); // Call the insert function
+                break;
+
+            case 3: // Delete a value
+                cout << "Enter the value to delete: ";
+                cin >> value;
+                list.deleteNode(value); // Call the delete function
+                break;
+
+            case 4: // Print the list
+                list.printList(); // Call the print function
+                break;
+
+            case 5: // Search for a value
+                cout << "Enter the value to search: ";
+                cin >> value;
+                if (list.search(value)) {
+                    cout << "Value " << value << " found in the list.\n";
+                } else {
+                    cout << "Value " << value << " not found in the list.\n";
+                }
+                break;
+
+            case 6: // Find the length of the list
+                cout << "Length of the list: " << list.length() << endl;
+                break;
+
+            case 7: // Exit the program
+                cout << "Exiting...\n";
+                return 0; // Exit the loop and end the program
+
+            default: // Handle invalid input
+                cout << "Invalid choice. Please enter a number between 1 and 7.\n";
+        }
+    }
+}
